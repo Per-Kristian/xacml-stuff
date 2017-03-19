@@ -1,6 +1,6 @@
-package com.sun.xacml;
-
+import com.sun.xacml.*;
 import com.sun.xacml.attr.AnyURIAttribute;
+import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.RFC822NameAttribute;
 import com.sun.xacml.attr.StringAttribute;
 import com.sun.xacml.ctx.Attribute;
@@ -11,13 +11,22 @@ import com.sun.xacml.finder.AttributeFinder;
 import com.sun.xacml.finder.PolicyFinder;
 import com.sun.xacml.finder.impl.CurrentEnvModule;
 import com.sun.xacml.finder.impl.FilePolicyModule;
+import jdk.internal.org.xml.sax.InputSource;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.soap.Node;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by piddy on 3/13/17.
@@ -26,10 +35,12 @@ public class NilsenPEP {
 
     private PDP pdp = null;
 
-    public NilsenPEP(String policy){
+    public NilsenPEP(String[] policies){
 
         FilePolicyModule policyModule = new FilePolicyModule();
-        policyModule.addPolicy("policy/" + policy + ".xml");
+        for (String policy : policies) {
+            policyModule.addPolicy("policy/" + policy);
+        }
 
         CurrentEnvModule envModule = new CurrentEnvModule();
 
@@ -64,16 +75,16 @@ public class NilsenPEP {
         // setup the id and value for the requesting subject
         URI subjectId =
                 new URI("urn:oasis:names:tc:xacml:1.0:subject:subject-id");
-        RFC822NameAttribute value =
-                new RFC822NameAttribute(subjectName);
 
+        AttributeValue value = new StringAttribute(subjectName);
         // create the subject section with two attributes, the first with
         // the subject's identity...
         attributes.add(new Attribute(subjectId, null, null, value));
         // ...and the second with the subject's group membership
-        attributes.add(new Attribute(new URI("group"),
+        /*attributes.add(new Attribute(new URI("group"),
                 "admin@users.example.com", null,
                 new StringAttribute("developers")));
+                */
 
         // bundle the attributes in a Subject with the default category
         HashSet subjects = new HashSet();
@@ -127,12 +138,85 @@ public class NilsenPEP {
     }
 
 
+    private String evaluate(String requestFile) {
+        String requestPath = "request/" + requestFile;
+        String results;
+        ByteArrayOutputStream out = null;
+        DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+        InputSource resInput;
+        try {
+            RequestCtx request =
+                    RequestCtx.getInstance(new FileInputStream(requestPath));
+            ResponseCtx response = pdp.evaluate(request);
+            out = new ByteArrayOutputStream();
+
+
+            response.encode(out, new Indenter());
+            results = out.toString();
+            /*
+            resInput= new InputSource(new StringReader(results));
+
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            String decision = xPath.evaluate("//Decision", resInput);
+            System.out.println("Decision: " + decision);
+            */
+            //if (results.)
+            return results;
+            //return response;
+        } catch(ParsingException|IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String evaluate(RequestCtx request) {
+        ResponseCtx response = pdp.evaluate(request);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        response.encode(baos, new Indenter());
+        return baos.toString();
+    }
+
     public static void main(String args[]){
 
-        NilsenPEP nilsenPEP = null;
-        String requestFile = null;
+        NilsenPEP nilsenPEP;
+        String subject = null;
+        String[] policies;
 
-        requestFile = args[0];
+        try {
+            if (args.length == 0) {
+                System.out.println("Expecting arguments: <subject> <action> <resource> <policy.xml> [more policies]");
+                System.out.println("Another option is to provide your own request file.");
+                System.out.println("In that case, use -config <request.xml> <policy.xml> [more policies]");
+                System.exit(1);
+            } else if (args[0].equals("-config")) {
+                policies = new String[args.length - 2];
+                for(int i = 0; i <= args.length - 3; i++) {
+                    policies[i] = args[i+2];
+                }
+                nilsenPEP = new NilsenPEP(policies);
+                String result = nilsenPEP.evaluate(args[1]);
+                System.out.print(result);
+            }
+            else {
+                policies = new String[args.length - 3];
+                for(int i = 0; i <= args.length - 4; i++) {
+                    policies[i] = args[i+3];
+                }
+                nilsenPEP = new NilsenPEP(policies);
+
+                RequestCtx request = new RequestCtx(setupSubjects(args[0]), setupAction(args[1]),
+                        setupResource(args[2]), new HashSet());
+                String result = nilsenPEP.evaluate(request);
+                System.out.print(result);
+
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+        //requestFile = args[0];
 
         //String [] policyFiles = new String[args.length - 1];
 
@@ -141,16 +225,6 @@ public class NilsenPEP {
 
         // create the new Request...note that the Environment must be specified
         // using a valid Set, even if that Set is empty
-        try{
-            RequestCtx request =
-                    new RequestCtx(setupSubjects("BaselKatt"), setupResource("eval.docx"),
-                            setupAction("read"), new HashSet());
-
-            // encode the Request and print it to standard out
-            request.encode(System.out, new Indenter());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
 
         // evaluate the request
         //ResponseCtx response = nilsenPEP.evaluate(requestFile);
