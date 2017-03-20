@@ -8,15 +8,25 @@
         <Attribute
               AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
               DataType="http://www.w3.org/2001/XMLSchema#string">
-            <AttributeValue>Julius Hibbert</AttributeValue>
+            <AttributeValue>SomeUser</AttributeValue>
         </Attribute>
+		<Attribute
+				   AttributeId="urn:oasis:names:tc:xacml:1.0:subject:clearance"
+				   DataType="http://www.w3.org/2001/XMLSchema#integer">
+			<AttributeValue>3</AttributeValue>
+		</Attribute>
     </Subject>
     <Resource>
         <Attribute
               AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
-              DataType="http://www.w3.org/2001/XMLSchema#anyURI">
-            <AttributeValue>http://medico.com/record/patient/BartSimpson</AttributeValue>
+              DataType="http://www.w3.org/2001/XMLSchema#string">
+            <AttributeValue>zefile</AttributeValue>
         </Attribute>
+		<Attribute
+				  AttributeId="urn:oasis:names:tc:xacml:1.0:resource:classification"
+				   DataType="http://www.w3.org/2001/XMLSchema#integer">
+			<AttributeValue>2</AttributeValue>
+		</Attribute>
     </Resource>
     <Action>
         <Attribute

@@ -24,60 +24,30 @@
           RuleId="urn:oasis:names:tc:xacml:1.0:conformance-test:IIA1:rule"
           Effect="Permit">
         <Description>
-            Julius Hibbert can read or write Bart Simpson's medical record.
+            Reading file	
         </Description>
         <Target>
             <Subjects>
                 <Subject>
                     <SubjectMatch
-                          MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-                        <AttributeValue
-                              DataType="http://www.w3.org/2001/XMLSchema#string">Alice</AttributeValue>
+                          MatchId="urn:oasis:names:tc:xacml:1.0:function:integer-less-than-or-equal">
+						<AttributeValue
+                              DataType="http://www.w3.org/2001/XMLSchema#integer">2</AttributeValue>
                         <SubjectAttributeDesignator
-                              AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
-                              DataType="http://www.w3.org/2001/XMLSchema#string"/>
+                              AttributeId="urn:oasis:names:tc:xacml:1.0:subject:clarification"
+                              DataType="http://www.w3.org/2001/XMLSchema#integer"/>
                     </SubjectMatch>
-                </Subject>
-				<Subject>
-                    <SubjectMatch
-                          MatchId="urn:oasis:names:tc:xacml:1.0:function:integer">
-                        <AttributeValue
-                              DataType="http://www.w3.org/2001/XMLSchema#string">Bob</AttributeValue>
-                        <SubjectAttributeDesignator
-                              AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
-                              DataType="http://www.w3.org/2001/XMLSchema#string"/>
-                    </SubjectMatch>
-                </Subject>
-				<Subject>
-                    <SubjectMatch
-                          MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-                        <AttributeValue
-                              DataType="http://www.w3.org/2001/XMLSchema#string">Carol</AttributeValue>
-                        <SubjectAttributeDesignator
-                              AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
-                              DataType="http://www.w3.org/2001/XMLSchema#string"/>
-                    </SubjectMatch>
-                </Subject>
-				<Subject>
-                    <SubjectMatch
-                          MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-                        <AttributeValue
-                              DataType="http://www.w3.org/2001/XMLSchema#string">David</AttributeValue>
-                        <SubjectAttributeDesignator
-                              AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
-                              DataType="http://www.w3.org/2001/XMLSchema#string"/>
-                    </SubjectMatch>
-                </Subject>
+				</Subject>
             </Subjects>
             <Resources>
                 <Resource>
                     <ResourceMatch
-                          MatchId="urn:oasis:names:tc:xacml:1.0:function:anyURI-equal">
+                          MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
                         <AttributeValue
-                              DataType="http://www.w3.org/2001/XMLSchema#anyURI">http://medico.com/record/patient/BartSimpson</AttributeValue>
+                              DataType="http://www.w3.org/2001/XMLSchema#string">zefile</AttributeValue>
                         <ResourceAttributeDesignator
                               AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
-                              DataType="http://www.w3.org/2001/XMLSchema#anyURI"/>
+                              DataType="http://www.w3.org/2001/XMLSchema#string"/>
                     </ResourceMatch>
                 </Resource>
             </Resources>
@@ -87,16 +57,6 @@
                           MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
                         <AttributeValue
                               DataType="http://www.w3.org/2001/XMLSchema#string">read</AttributeValue>
-                        <ActionAttributeDesignator
-                              AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
-                              DataType="http://www.w3.org/2001/XMLSchema#string"/>
-                    </ActionMatch>
-                </Action>
-                <Action>
-                    <ActionMatch
-                          MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-                        <AttributeValue
-                              DataType="http://www.w3.org/2001/XMLSchema#string">write</AttributeValue>
                         <ActionAttributeDesignator
                               AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
                               DataType="http://www.w3.org/2001/XMLSchema#string"/>
