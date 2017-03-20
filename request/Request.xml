@@ -13,14 +13,14 @@
 		<Attribute
 				   AttributeId="urn:oasis:names:tc:xacml:1.0:subject:clearance"
 				   DataType="http://www.w3.org/2001/XMLSchema#integer">
-			<AttributeValue>3</AttributeValue>
+			<AttributeValue>1</AttributeValue>
 		</Attribute>
     </Subject>
     <Resource>
         <Attribute
               AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
               DataType="http://www.w3.org/2001/XMLSchema#string">
-            <AttributeValue>zefile</AttributeValue>
+            <AttributeValue>File</AttributeValue>
         </Attribute>
 		<Attribute
 				  AttributeId="urn:oasis:names:tc:xacml:1.0:resource:classification"
@@ -32,7 +32,7 @@
         <Attribute
               AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
               DataType="http://www.w3.org/2001/XMLSchema#string">
-            <AttributeValue>read</AttributeValue>
+            <AttributeValue>append</AttributeValue>
         </Attribute>
     </Action>
 </Request>

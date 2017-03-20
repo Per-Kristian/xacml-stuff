@@ -29,12 +29,17 @@ import java.net.URISyntaxException;
 import java.util.*;
 
 /**
- * Created by piddy on 3/13/17.
+ * This is a very simple implementation of a PEP/PDP in XACML. It currently works with smaller policies like the
+ * Bell-LaPadula security model.
  */
 public class NilsenPEP {
 
     private PDP pdp = null;
 
+    /**
+     * This constructor takes one or more policies and initiates a new PDP object for later use.
+     * @param policies one or more policy files
+     */
     public NilsenPEP(String[] policies){
 
         FilePolicyModule policyModule = new FilePolicyModule();
@@ -138,12 +143,15 @@ public class NilsenPEP {
     }
 
 
+    /**
+     * Takes the path to the request XML file, reads it, and lets the PDP evaluate it.
+     * @param requestFile The path to the request file
+     * @return the result encoded as a string.
+     */
     private String evaluate(String requestFile) {
         String requestPath = "request/" + requestFile;
         String results;
-        ByteArrayOutputStream out = null;
-        DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-        InputSource resInput;
+        ByteArrayOutputStream out;
         try {
             RequestCtx request =
                     RequestCtx.getInstance(new FileInputStream(requestPath));
@@ -169,6 +177,11 @@ public class NilsenPEP {
         return null;
     }
 
+    /**
+     * Evaluates the generated RequestCtx object, and returns a response from the PDP.
+     * @param request the generated RequestCtx.
+     * @return
+     */
     private String evaluate(RequestCtx request) {
         ResponseCtx response = pdp.evaluate(request);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -177,10 +190,15 @@ public class NilsenPEP {
         return baos.toString();
     }
 
+    /**
+     * The main program. Depending on the arguments, it will either take a request and a policy, or subject + action +
+     * resource + policy.
+     * Only the '-config' option works at this time.
+     * @param args either "-config resource.xml policy.xml" or "subject action resource policy.xml"
+     */
     public static void main(String args[]){
 
         NilsenPEP nilsenPEP;
-        String subject = null;
         String[] policies;
 
         try {
@@ -214,19 +232,5 @@ public class NilsenPEP {
         } catch (Exception e){
             e.printStackTrace();
         }
-
-
-        //requestFile = args[0];
-
-        //String [] policyFiles = new String[args.length - 1];
-
-        /*for (int i = 1; i < args.length; i++)
-            policyFiles[i-1] = args[i];*/
-
-        // create the new Request...note that the Environment must be specified
-        // using a valid Set, even if that Set is empty
-
-        // evaluate the request
-        //ResponseCtx response = nilsenPEP.evaluate(requestFile);
     }
 }

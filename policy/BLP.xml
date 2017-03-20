@@ -24,30 +24,33 @@
           RuleId="urn:oasis:names:tc:xacml:1.0:conformance-test:IIA1:rule"
           Effect="Permit">
         <Description>
-            Reading file	
+            Reading files.
         </Description>
         <Target>
             <Subjects>
                 <Subject>
                     <SubjectMatch
-                          MatchId="urn:oasis:names:tc:xacml:1.0:function:integer-less-than-or-equal">
-						<AttributeValue
-                              DataType="http://www.w3.org/2001/XMLSchema#integer">2</AttributeValue>
+                          MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue
+                              DataType="http://www.w3.org/2001/XMLSchema#string">Julius</AttributeValue>
                         <SubjectAttributeDesignator
-                              AttributeId="urn:oasis:names:tc:xacml:1.0:subject:clarification"
-                              DataType="http://www.w3.org/2001/XMLSchema#integer"/>
+                              AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
+                              DataType="http://www.w3.org/2001/XMLSchema#string"/>
                     </SubjectMatch>
-				</Subject>
+                </Subject>
+				
             </Subjects>
             <Resources>
                 <Resource>
                     <ResourceMatch
                           MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
                         <AttributeValue
-                              DataType="http://www.w3.org/2001/XMLSchema#string">zefile</AttributeValue>
+                              DataType="http://www.w3.org/2001/XMLSchema#string">unclassified.jpg</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#integer">0</AttributeValue>
                         <ResourceAttributeDesignator
                               AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
                               DataType="http://www.w3.org/2001/XMLSchema#string"/>
+							  
                     </ResourceMatch>
                 </Resource>
             </Resources>
@@ -63,6 +66,24 @@
                     </ActionMatch>
                 </Action>
             </Actions>
+			
+			<xacml3:Condition>
+            <xacml3:Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of-any">
+                <xacml3:Function FunctionId="urn:oasis:names:tc:xacml:1.0:function:integer-greater-than-or-equal"/>
+                <xacml3:AttributeDesignator
+                    AttributeId="clearance"
+                    DataType="http://www.w3.org/2001/XMLSchema#integer"
+                    Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+                    MustBePresent="false"
+                />
+                <xacml3:AttributeDesignator 
+                    AttributeId="classification"
+                    DataType="http://www.w3.org/2001/XMLSchema#integer"
+                    Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+                    MustBePresent="false"
+                />
+            </xacml3:Apply>
+        </xacml3:Condition>
         </Target>
     </Rule>
 </Policy>
